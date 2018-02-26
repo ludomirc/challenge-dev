@@ -2,25 +2,17 @@ package org.qbit.challenge.challenge.dev.model;
 
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "post")
 public class Post extends AbstractPersistable<Long> {
 
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
 
-
-
-
-
-   /* Long Id
-
-    {
-        "userId": 1,
-            "id": 1,
-            "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-            "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
-    }*/
+    @Column(name ="body", length = 140, nullable = false)
+    private String body;
 
 }
