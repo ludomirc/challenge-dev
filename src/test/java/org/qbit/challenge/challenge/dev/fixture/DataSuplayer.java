@@ -1,6 +1,5 @@
 package org.qbit.challenge.challenge.dev.fixture;
 
-import javafx.geometry.Pos;
 import org.qbit.challenge.challenge.dev.dto.PostDto;
 import org.qbit.challenge.challenge.dev.model.Post;
 import org.qbit.challenge.challenge.dev.model.User;
@@ -59,4 +58,17 @@ public final class DataSuplayer {
 
         return postDto;
     }
+
+   /* public static List<Follower> getTimeLines() {
+       *//* TimeLinePK pk1 = new TimeLinePK("u1", "u2");
+        TimeLinePK pk2 = new TimeLinePK("u1", "u3");
+        TimeLinePK pk3 = new TimeLinePK("u2", "u1");
+
+        Follower tl1 = new Follower(pk1);
+        Follower tl2 = new Follower(pk2);
+        Follower tl3 = new Follower(pk3);
+
+        return Arrays.asList(tl1, tl2, tl3);*//*
+
+    }*/
 }
