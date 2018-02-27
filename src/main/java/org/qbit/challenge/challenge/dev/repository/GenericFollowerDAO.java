@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface GenericFollowerDAO extends CrudRepository<Follower,Long> {
 
-    List<Follower> findByOwner(User user);
+    Follower findByOwner(User user);
 }

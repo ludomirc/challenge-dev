@@ -30,25 +30,28 @@ public class GenericFollowerDAOIntegrationTest {
     @PersistenceContext
     private EntityManager em;
 
-
     private List<Follower> expectedFollowers;
+    private List<User> expectedUsers;
 
     @Autowired
     private GenericFollowerDAO followerDAO;
 
+    @Autowired
+    private GenericUserDAO userDAO;
+
     @Before
     public void setUp() {
 
-        List<User> users  = Arrays.asList(new User("u1"),new User("u2"),new User("u3"));
+        expectedUsers  = Arrays.asList(new User("u1"),new User("u2"),new User("u3"));
 
-        users.forEach(u -> em.persist(u));
+        expectedUsers.forEach(u -> em.persist(u));
         em.flush();
 
         Follower follower1 = new Follower();
         Follower follower2 = new Follower();
 
-        follower1.setOwner(users.get(0));
-        follower2.setOwner(users.get(1));
+        follower1.setOwner(expectedUsers.get(0));
+        follower2.setOwner(expectedUsers.get(1));
 
         expectedFollowers = new LinkedList<>();
 
@@ -56,7 +59,7 @@ public class GenericFollowerDAOIntegrationTest {
         expectedFollowers.add(follower2);
 
         List<User> observed1 = new LinkedList<>();
-        observed1.add(users.get(2));
+        observed1.add(expectedUsers.get(2));
 
         follower1.setObserved(observed1);
         follower2.setObserved(observed1);
@@ -68,13 +71,17 @@ public class GenericFollowerDAOIntegrationTest {
 
     @After
     public void tearDown() {
+
         followerDAO.delete(expectedFollowers);
+        userDAO.delete(expectedUsers);
+
+        expectedUsers = null;
         expectedFollowers = null;
     }
 
 
     @Test
-    public void whenTimeLineListIsGiven_thenSizeShouldBeAsExpected() {
+    public void whenFollowerListIsGiven_thenSizeShouldBeAsExpected() {
 
         List<Follower> actual = (List<Follower>) followerDAO.findAll();
 
@@ -82,14 +89,16 @@ public class GenericFollowerDAOIntegrationTest {
 
     }
 
-   /* @Test
-    public void whenUserIsGiven_thenGetTimeLine() {
+    @Test
+    public void whenUserIsGiven_thenFindFollower() {
 
-        List<Follower> actual = (List<Follower>) timeLineDAO.findAll();
+        User expectedUser = expectedUsers.get(0);
 
-        assertThat(actual.size(), is(equalTo(expectedFollowers.size())));
+        Follower actual =  followerDAO.findByOwner(expectedUser);
 
-    }*/
+        assertThat(actual.getOwner(), is(equalTo(expectedUser)));
+
+    }
 
 
 }
