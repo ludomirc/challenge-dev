@@ -1,6 +1,5 @@
 package org.qbit.challenge.challenge.dev.service.impl;
 
-import javafx.geometry.Pos;
 import org.qbit.challenge.challenge.dev.dto.PostDto;
 import org.qbit.challenge.challenge.dev.mapper.PostMapper;
 import org.qbit.challenge.challenge.dev.model.Follower;
@@ -8,7 +7,6 @@ import org.qbit.challenge.challenge.dev.model.Post;
 import org.qbit.challenge.challenge.dev.model.User;
 import org.qbit.challenge.challenge.dev.repository.GenericFollowerDAO;
 import org.qbit.challenge.challenge.dev.repository.GenericPostDAO;
-import org.qbit.challenge.challenge.dev.repository.GenericUserDAO;
 import org.qbit.challenge.challenge.dev.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,16 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
-public class PostServiceImpl implements PostService {
+public class PostServiceImpl extends BaseService implements PostService {
 
     @Autowired
     GenericPostDAO postDAO;
-
-    @Autowired
-    GenericUserDAO userDAO;
 
     @Autowired
     GenericFollowerDAO followerDAO;
@@ -43,12 +37,6 @@ public class PostServiceImpl implements PostService {
                 .map(p -> PostMapper.PostToDto(p)).collect(Collectors.toList());
 
         return postDtos;
-    }
-
-    private User getUser(String userId) {
-        User user = userDAO.findOne(userId);
-        if (user == null) throw new RuntimeException(String.format("user %s not fund", userId));
-        return user;
     }
 
     @Override
