@@ -24,9 +24,9 @@ public class PostMapperTest {
 
         PostDto actual = PostMapper.PostToDto(expected);
 
-        assertThat(expected.getId(), is(equalTo(actual.getId())));
-        assertThat(expected.getUser().getId(), is(equalTo(actual.getUserId())));
-        assertThat(expected.getBody(), is(equalTo(actual.getBody())));
+        assertThat(actual.getId(), is(equalTo(expected.getId())));
+        assertThat(actual.getUserId(), is(equalTo(expected.getUser().getId())));
+        assertThat(actual.getBody(), is(equalTo(expected.getBody())));
 
     }
 
@@ -43,9 +43,9 @@ public class PostMapperTest {
 
         Post actual = PostMapper.DtoToPost(expected);
 
-        assertThat(expected.getId(), is(equalTo(actual.getId())));
-        assertThat(expected.getUserId(), is(equalTo(actual.getUser().getId())));
-        assertThat(expected.getBody(), is(equalTo(actual.getBody())));
+        assertThat(actual.getId(), is(equalTo(expected.getId())));
+        assertThat(actual.getUser().getId(), is(equalTo(expected.getUserId())));
+        assertThat(actual.getBody(), is(equalTo(expected.getBody())));
 
     }
 

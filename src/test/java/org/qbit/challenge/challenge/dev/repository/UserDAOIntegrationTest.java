@@ -50,7 +50,7 @@ public class UserDAOIntegrationTest {
 
         List<User> actual = (List<User>) userDao.findAll();
 
-        assertThat(expectedUsers.size(), is(equalTo(expectedUsers.size())));
+        assertThat(actual.size(), is(equalTo(expectedUsers.size())));
     }
 
 }

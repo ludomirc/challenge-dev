@@ -63,8 +63,8 @@ public class PostServiceImplTest {
         expectedPosts.forEach(ePost -> {
 
             PostDto actualDto =  actualDtoMap.get(ePost.getId());
-            assertThat(ePost.getUser().getId(), is(equalTo(actualDto.getUserId())));
-            assertThat(ePost.getBody(), is(equalTo(actualDto.getBody())));
+            assertThat(actualDto.getUserId(), is(equalTo(ePost.getUser().getId())));
+            assertThat(actualDto.getBody(),is(equalTo(ePost.getBody())));
         });
     }
 }
