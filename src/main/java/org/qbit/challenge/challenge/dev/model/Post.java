@@ -6,6 +6,7 @@ import lombok.ToString;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "post")
@@ -15,13 +16,14 @@ import javax.persistence.*;
 public class Post extends AbstractPersistable<Long> {
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name ="body", length = 140, nullable = false)
+    @Size(min = 1, max = 50)
+    @Column(name = "body", length = 140, nullable = false)
     private String body;
 
-    public void setId(Long id){
+    public void setId(Long id) {
         super.setId(id);
     }
 }

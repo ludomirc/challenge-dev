@@ -1,13 +1,16 @@
 package org.qbit.challenge.challenge.dev.web;
 
-import org.qbit.challenge.challenge.dev.model.Post;
-import org.qbit.challenge.challenge.dev.model.User;
+import org.qbit.challenge.challenge.dev.dto.PostDto;
 import org.qbit.challenge.challenge.dev.repository.GenericPostDAO;
 import org.qbit.challenge.challenge.dev.repository.GenericUserDAO;
+import org.qbit.challenge.challenge.dev.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedList;
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @RestController
@@ -20,25 +23,24 @@ public class PostResource {
     @Autowired
     GenericPostDAO postDAO;
 
+    @Autowired
+    PostService postService;
 
-    @GetMapping("/post/{userId}")
-    List<Post> getPosts(@PathVariable String userId){
+    @GetMapping("/posts/{userId}")
+    ResponseEntity<?> getPosts(@PathVariable String userId){
 
-        System.out.println(String.format("userId: %s",userId));
-        List<Post> post  = new  LinkedList();
-        Post post1 = new Post();
-        post1.setBody("testBody");
-        post1.setUser(new User(userId));
-        post.add(post1);
-        return post;
+        List<PostDto> posts = postService.findPostsByUserId(userId);
+
+        return new ResponseEntity<> (posts, HttpStatus.OK);
     }
 
     @PostMapping("/post/{userId}")
-    List<Post> createPost(@PathVariable String userId,@RequestBody Post post){
+    ResponseEntity<?> createPost(@Valid  @Size(min = 1, max = 50) @PathVariable String userId, @Valid @RequestBody PostDto post){
 
-        System.out.println(String.format("userId: %s post: %s",userId,post));
+        post.setUserId(userId);
+        postService.crate(post);
 
-        return null;
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
