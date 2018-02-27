@@ -97,8 +97,5 @@ public class GenericFollowerDAOIntegrationTest {
         Follower actual =  followerDAO.findByOwner(expectedUser);
 
         assertThat(actual.getOwner(), is(equalTo(expectedUser)));
-
     }
-
-
 }

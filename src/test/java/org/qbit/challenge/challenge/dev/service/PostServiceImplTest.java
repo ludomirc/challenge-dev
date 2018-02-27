@@ -11,6 +11,7 @@ import org.qbit.challenge.challenge.dev.model.Post;
 import org.qbit.challenge.challenge.dev.model.User;
 import org.qbit.challenge.challenge.dev.repository.GenericPostDAO;
 import org.qbit.challenge.challenge.dev.repository.GenericUserDAO;
+import org.qbit.challenge.challenge.dev.service.impl.PostServiceImpl;
 
 import java.util.HashMap;
 import java.util.List;
