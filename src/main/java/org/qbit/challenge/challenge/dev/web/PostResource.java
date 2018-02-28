@@ -1,8 +1,6 @@
 package org.qbit.challenge.challenge.dev.web;
 
 import org.qbit.challenge.challenge.dev.dto.PostDto;
-import org.qbit.challenge.challenge.dev.repository.GenericPostDAO;
-import org.qbit.challenge.challenge.dev.repository.GenericUserDAO;
 import org.qbit.challenge.challenge.dev.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,23 +16,17 @@ import java.util.List;
 public class PostResource {
 
     @Autowired
-    GenericUserDAO userDAO;
-
-    @Autowired
-    GenericPostDAO postDAO;
-
-    @Autowired
     PostService postService;
 
-    @GetMapping("/posts/{userId}")
-    ResponseEntity<?> getPosts(@PathVariable String userId){
+    @GetMapping("/{userId}/posts")
+    ResponseEntity<?> getPosts(@Valid  @Size(min = 1, max = 50) @PathVariable String userId){
 
         List<PostDto> posts = postService.findPostsByUserId(userId);
 
         return new ResponseEntity<> (posts, HttpStatus.OK);
     }
 
-    @PostMapping("/post/{userId}")
+    @PostMapping("/{userId}/post")
     ResponseEntity<?> createPost(@Valid  @Size(min = 1, max = 50) @PathVariable String userId, @Valid @RequestBody PostDto post){
 
         post.setUserId(userId);
@@ -43,4 +35,11 @@ public class PostResource {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/{userId}/followed")
+    ResponseEntity<?> getFollowedPosts(@Valid  @Size(min = 1, max = 50) @PathVariable String userId){
+
+        List<PostDto> posts = postService.findFollowedPostsByOwnerId(userId);
+
+        return new ResponseEntity<> (posts, HttpStatus.OK);
+    }
 }

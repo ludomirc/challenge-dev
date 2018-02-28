@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +32,7 @@ public class PostServiceImpl extends BaseService implements PostService {
 
         User user = getUser(userId);
 
-        List<Post> posts = postDAO.findByUser(user);
+        List<Post> posts = postDAO.findByUserOrderByIdDesc(user);
 
         List<PostDto> postDtos = posts.stream()
                 .map(p -> PostMapper.PostToDto(p)).collect(Collectors.toList());
@@ -58,9 +59,9 @@ public class PostServiceImpl extends BaseService implements PostService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<PostDto> findFollowedPostsByUserId(String userId) {
+    public List<PostDto> findFollowedPostsByOwnerId(String ownerId) {
 
-        User user = getUser(userId);
+        User user = getUser(ownerId);
 
         Follower follower =  followerDAO.findByOwner(user);
         List<User> observed =  follower.getObserved();
@@ -68,7 +69,16 @@ public class PostServiceImpl extends BaseService implements PostService {
         List<Post> posts = new LinkedList<>();
         observed.forEach(o -> posts.addAll(postDAO.findByUser(o)));
 
-        List<PostDto> postDtos = posts.stream().map(p-> PostMapper.PostToDto(p)).collect(Collectors.toList());
+        Comparator<Post> postOrderByDesc = (p1, p2) -> {
+
+            long p1Id = p1.getId();
+            long p2Id = p2.getId();
+
+            return p2Id < p1Id ? -1 : p2Id == p1Id ? 0 : 1;
+        };
+
+        List<PostDto> postDtos = posts.stream().sorted(postOrderByDesc)
+                .map(p-> PostMapper.PostToDto(p)).collect(Collectors.toList());
 
         return postDtos;
     }

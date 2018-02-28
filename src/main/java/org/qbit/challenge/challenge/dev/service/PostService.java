@@ -10,5 +10,5 @@ public interface PostService {
 
    void crate(PostDto postDto);
 
-   List<PostDto> findFollowedPostsByUserId(String userId);
+   List<PostDto> findFollowedPostsByOwnerId(String ownerId);
 }

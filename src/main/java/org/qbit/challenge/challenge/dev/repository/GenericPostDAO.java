@@ -10,5 +10,7 @@ import java.util.List;
 @Repository
 public interface GenericPostDAO extends CrudRepository<Post,Long> {
 
+    List<Post> findByUserOrderByIdDesc(User user);
+
     List<Post> findByUser(User user);
 }
