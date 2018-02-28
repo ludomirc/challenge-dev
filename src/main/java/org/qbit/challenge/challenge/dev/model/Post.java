@@ -19,7 +19,7 @@ public class Post extends AbstractPersistable<Long> {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 140)
     @Column(name = "body", length = 140, nullable = false)
     private String body;
 
