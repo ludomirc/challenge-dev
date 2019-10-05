@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
-import java.util.LinkedList;
+import java.util.Arrays;
 
 @Service
 public class TimeLineServiceImpl extends BaseService implements TimeLineService {
@@ -26,9 +26,9 @@ public class TimeLineServiceImpl extends BaseService implements TimeLineService 
         User owner = getUser(userId);
         User observedUser = getUser(observedUserId);
 
-        Follower follower = getFollower(owner);
+        Follower follower = getFollower(owner,observedUser);
 
-        follower.getObserved().add(observedUser);
+        follower.getObservedUsers().add(observedUser);
 
         followerDAO.save(follower);
     }
@@ -42,14 +42,7 @@ public class TimeLineServiceImpl extends BaseService implements TimeLineService 
                     String.format("userId '%s' cannot be the same like observedUserId '%s'",userId,observedUserId));
     }
 
-    private Follower getFollower(User owner) {
-
-        Follower follower = followerDAO.findByOwner(owner);
-        if (follower == null) {
-            follower = new Follower();
-            follower.setOwner(owner);
-            follower.setObserved(new LinkedList<>());
-        }
-        return follower;
+    private Follower getFollower(User owner, User observedUser) {
+        return followerDAO.findByOwner(owner).orElseGet(() -> new Follower(owner, Arrays.asList(observedUser)));
     }
 }

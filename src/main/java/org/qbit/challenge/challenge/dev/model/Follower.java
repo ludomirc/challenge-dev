@@ -16,7 +16,6 @@ import java.util.List;
 @ToString
 public class Follower extends AbstractPersistable<Long> {
 
-
     @OneToOne
     @JoinColumn(name = "owner_id", unique = true)
     private User owner;
@@ -26,5 +25,5 @@ public class Follower extends AbstractPersistable<Long> {
             joinColumns = {@JoinColumn(name = "follower_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "duser_id", referencedColumnName = "id", unique = true)}
     )
-    private List<User> observed;
+    private List<User> observedUsers;
 }

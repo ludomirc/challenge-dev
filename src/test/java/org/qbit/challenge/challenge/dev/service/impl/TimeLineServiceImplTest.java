@@ -1,9 +1,9 @@
 package org.qbit.challenge.challenge.dev.service.impl;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.qbit.challenge.challenge.dev.ChallengeDevApplication;
 import org.qbit.challenge.challenge.dev.model.Follower;
 import org.qbit.challenge.challenge.dev.model.User;
@@ -11,7 +11,7 @@ import org.qbit.challenge.challenge.dev.repository.GenericFollowerDAO;
 import org.qbit.challenge.challenge.dev.repository.GenericUserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -20,11 +20,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
 
 @Transactional
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = ChallengeDevApplication.class)
 public class TimeLineServiceImplTest {
 
@@ -42,7 +42,7 @@ public class TimeLineServiceImplTest {
     @Autowired
     private GenericFollowerDAO followerDAO;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         expectedUsers = Arrays.asList(new User("u1"), new User("u2"), new User("u3"));
@@ -51,9 +51,9 @@ public class TimeLineServiceImplTest {
         em.flush();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
-        userDAO.delete(expectedUsers);
+        userDAO.deleteAll(expectedUsers);
         expectedUsers = null;
     }
 
@@ -71,6 +71,6 @@ public class TimeLineServiceImplTest {
         int expectedSize = 2;
         assertThat(actual.size(), is(equalTo(expectedSize)));
 
-        followerDAO.delete(actual);
+        followerDAO.deleteAll(actual);
     }
 }

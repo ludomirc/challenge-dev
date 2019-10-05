@@ -1,7 +1,7 @@
 package org.qbit.challenge.challenge.dev.service.impl;
 
 import org.qbit.challenge.challenge.dev.dto.PostDto;
-import org.qbit.challenge.challenge.dev.mapper.PostMapper;
+import org.qbit.challenge.challenge.dev.converter.PostMapper;
 import org.qbit.challenge.challenge.dev.model.Follower;
 import org.qbit.challenge.challenge.dev.model.Post;
 import org.qbit.challenge.challenge.dev.model.User;
@@ -13,9 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class PostServiceImpl extends BaseService implements PostService {
@@ -30,56 +31,48 @@ public class PostServiceImpl extends BaseService implements PostService {
     @Transactional(readOnly = true)
     public List<PostDto> findPostsByUserId(String userId) {
 
-        User user = getUser(userId);
-
-        List<Post> posts = postDAO.findByUserOrderByIdDesc(user);
-
-        List<PostDto> postDtos = posts.stream()
-                .map(p -> PostMapper.PostToDto(p)).collect(Collectors.toList());
-
-        return postDtos;
+        return postDAO.findByUserOrderByIdDesc(getUser(userId))
+                .map(PostMapper::PostToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public void crate(PostDto postDto) {
+        postDAO.save(getPost(postDto));
+    }
 
-        User user = userDAO.findOne(postDto.getUserId());
-        if (user == null) {
+    @Transactional(readOnly = false)
+    protected Post getPost(PostDto postDto) {
 
-            user = new User(postDto.getUserId());
-            user =  userDAO.save(user);
-        }
+        User user = userDAO.findById(postDto.getUserId())
+                .orElseGet(() -> userDAO.save(new User(postDto.getUserId())));
 
         Post post = PostMapper.DtoToPost(postDto);
         post.setUser(user);
 
-        postDAO.save(post);
+        return post;
     }
 
-    @Transactional(readOnly = true)
     @Override
+    @Transactional(readOnly = true)
     public List<PostDto> findFollowedPostsByOwnerId(String ownerId) {
 
-        User user = getUser(ownerId);
+        User owner = getUser(ownerId);
 
-        Follower follower =  followerDAO.findByOwner(user);
-        List<User> observed =  follower.getObserved();
+        return getObservedUsers(owner)
+                .map(postDAO::findByUser)
+                .flatMap(postStream -> postStream )
+                .sorted(Comparator.comparingLong(Post::getId).reversed())
+                .map(PostMapper::PostToDto)
+                .collect(Collectors.toList());
+    }
 
-        List<Post> posts = new LinkedList<>();
-        observed.forEach(o -> posts.addAll(postDAO.findByUser(o)));
+    protected Stream<User> getObservedUsers(User owner) {
 
-        Comparator<Post> postOrderByDesc = (p1, p2) -> {
+        Optional<Follower> follower = followerDAO.findByOwner(owner);
+        if(follower.isEmpty()) return Stream.empty();
 
-            long p1Id = p1.getId();
-            long p2Id = p2.getId();
-
-            return p2Id < p1Id ? -1 : p2Id == p1Id ? 0 : 1;
-        };
-
-        List<PostDto> postDtos = posts.stream().sorted(postOrderByDesc)
-                .map(p-> PostMapper.PostToDto(p)).collect(Collectors.toList());
-
-        return postDtos;
+        return follower.get().getObservedUsers().stream();
     }
 }

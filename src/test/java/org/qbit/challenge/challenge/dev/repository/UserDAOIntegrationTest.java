@@ -1,15 +1,15 @@
 package org.qbit.challenge.challenge.dev.repository;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.qbit.challenge.challenge.dev.ChallengeDevApplication;
 import org.qbit.challenge.challenge.dev.fixture.DataSuplayer;
 import org.qbit.challenge.challenge.dev.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @Transactional
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = ChallengeDevApplication.class)
 public class UserDAOIntegrationTest {
 
@@ -28,19 +28,17 @@ public class UserDAOIntegrationTest {
     @Autowired
     private GenericUserDAO userDao;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         expectedUsers = DataSuplayer.getUsers();
 
-        userDao.save(expectedUsers);
+        userDao.saveAll(expectedUsers);
     }
 
-
-
-    @After
+    @AfterEach
     public void tearDown() {
-        userDao.delete(expectedUsers);
+        userDao.deleteAll(expectedUsers);
         expectedUsers = null;
     }
 

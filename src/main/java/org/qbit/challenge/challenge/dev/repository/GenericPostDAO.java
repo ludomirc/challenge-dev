@@ -6,11 +6,12 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Repository
 public interface GenericPostDAO extends CrudRepository<Post,Long> {
 
-    List<Post> findByUserOrderByIdDesc(User user);
+    Stream<Post> findByUserOrderByIdDesc(User user);
 
-    List<Post> findByUser(User user);
+    Stream<Post> findByUser(User user);
 }

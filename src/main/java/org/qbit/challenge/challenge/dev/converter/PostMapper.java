@@ -1,4 +1,4 @@
-package org.qbit.challenge.challenge.dev.mapper;
+package org.qbit.challenge.challenge.dev.converter;
 
 import org.qbit.challenge.challenge.dev.dto.PostDto;
 import org.qbit.challenge.challenge.dev.model.Post;

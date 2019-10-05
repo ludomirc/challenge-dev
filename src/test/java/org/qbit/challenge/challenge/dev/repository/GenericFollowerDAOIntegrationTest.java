@@ -1,15 +1,15 @@
 package org.qbit.challenge.challenge.dev.repository;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.qbit.challenge.challenge.dev.ChallengeDevApplication;
 import org.qbit.challenge.challenge.dev.model.Follower;
 import org.qbit.challenge.challenge.dev.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -17,13 +17,14 @@ import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @Transactional
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = ChallengeDevApplication.class)
 public class GenericFollowerDAOIntegrationTest {
 
@@ -39,7 +40,7 @@ public class GenericFollowerDAOIntegrationTest {
     @Autowired
     private GenericUserDAO userDAO;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         expectedUsers  = Arrays.asList(new User("u1"),new User("u2"),new User("u3"));
@@ -61,19 +62,19 @@ public class GenericFollowerDAOIntegrationTest {
         List<User> observed1 = new LinkedList<>();
         observed1.add(expectedUsers.get(2));
 
-        follower1.setObserved(observed1);
-        follower2.setObserved(observed1);
+        follower1.setObservedUsers(observed1);
+        follower2.setObservedUsers(observed1);
 
-        followerDAO.save(expectedFollowers);
+        followerDAO.saveAll(expectedFollowers);
 
     }
 
 
-    @After
+    @AfterEach
     public void tearDown() {
 
-        followerDAO.delete(expectedFollowers);
-        userDAO.delete(expectedUsers);
+        followerDAO.deleteAll(expectedFollowers);
+        userDAO.deleteAll(expectedUsers);
 
         expectedUsers = null;
         expectedFollowers = null;
@@ -94,8 +95,8 @@ public class GenericFollowerDAOIntegrationTest {
 
         User expectedUser = expectedUsers.get(0);
 
-        Follower actual =  followerDAO.findByOwner(expectedUser);
+        Optional<Follower> actual =  followerDAO.findByOwner(expectedUser);
 
-        assertThat(actual.getOwner(), is(equalTo(expectedUser)));
+        assertThat(actual.get().getOwner(), is(equalTo(expectedUser)));
     }
 }

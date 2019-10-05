@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "dev_user")
+@Table(name = "duser")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,5 +23,4 @@ public class User implements Serializable {
     @Id
     @Size(min = 1, max = 50)
     private String id;
-
 }
