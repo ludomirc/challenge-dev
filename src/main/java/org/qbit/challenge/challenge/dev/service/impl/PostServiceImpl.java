@@ -69,7 +69,6 @@ public class PostServiceImpl extends BaseService implements PostService {
     }
 
     protected Stream<User> getObservedUsers(User owner) {
-
         Optional<Follower> follower = followerDAO.findByOwner(owner);
         if(follower.isEmpty()) return Stream.empty();
 
